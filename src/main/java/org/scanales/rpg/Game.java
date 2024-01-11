@@ -4,31 +4,34 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Game extends JPanel implements ActionListener, KeyListener, MouseMotionListener {
-    private int gridSize = 30; // Size of each grid cell
-    private int numRows = 10;  // Number of rows in the field
-    private int numCols = 10;  // Number of columns in the field
+public class Game extends JPanel implements ActionListener, KeyListener, MouseMotionListener, ComponentListener {
+    private int gridSize = 10; // Size of each grid cell (changed to 10)
+    private int numRows = 90;  // Number of rows in the field
+    private int numCols = 160; // Number of columns in the field
 
-    private int playerX = 0;   // Initial player X position
-    private int playerY = 0;   // Initial player Y position
+    private int playerX = numCols / 2;   // Initial player X position (centered)
+    private int playerY = numRows / 2;   // Initial player Y position (centered)
 
     private int mouseX = -1;   // Mouse X position (initialized to -1)
     private int mouseY = -1;   // Mouse Y position (initialized to -1)
 
     private Timer timer;
 
+    private int playerSpeed = 1; // Player speed set to 1
+
     public Game() {
         setPreferredSize(new Dimension(gridSize * numCols, gridSize * numRows));
         setBackground(Color.WHITE);
 
         // Set up a timer for animation (if needed)
-        timer = new Timer(100, this);
+        timer = new Timer(16, this); // 16ms delay for ~60 FPS
         timer.start();
 
         addKeyListener(this);
         addMouseMotionListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
+        addComponentListener(this); // Register a component listener for window resizing
     }
 
     @Override
@@ -50,7 +53,7 @@ public class Game extends JPanel implements ActionListener, KeyListener, MouseMo
             }
         }
 
-        // Draw the player
+        // Draw the player (adjusted for centering)
         g.setColor(Color.BLUE);
         g.fillRect(playerX * gridSize, playerY * gridSize, gridSize, gridSize);
 
@@ -85,27 +88,58 @@ public class Game extends JPanel implements ActionListener, KeyListener, MouseMo
         // Handle keyPressed events (e.g., player movement)
         int keyCode = e.getKeyCode();
 
+        boolean moveHorizontal = false;
+        boolean moveVertical = false;
+
         switch (keyCode) {
             case KeyEvent.VK_LEFT:
                 if (playerX > 0) {
-                    playerX--;
+                    playerX -= playerSpeed;
+                    moveHorizontal = true;
                 }
                 break;
             case KeyEvent.VK_RIGHT:
                 if (playerX < numCols - 1) {
-                    playerX++;
+                    playerX += playerSpeed;
+                    moveHorizontal = true;
                 }
                 break;
             case KeyEvent.VK_UP:
                 if (playerY > 0) {
-                    playerY--;
+                    playerY -= playerSpeed;
+                    moveVertical = true;
                 }
                 break;
             case KeyEvent.VK_DOWN:
                 if (playerY < numRows - 1) {
-                    playerY++;
+                    playerY += playerSpeed;
+                    moveVertical = true;
                 }
                 break;
+        }
+
+        // Handle diagonal movement
+        if (moveHorizontal && moveVertical) {
+            // You can adjust playerSpeedDiagonal to control diagonal movement speed
+            int playerSpeedDiagonal = playerSpeed / 2;
+
+            if (keyCode == KeyEvent.VK_LEFT) {
+                if (playerX > 0) {
+                    playerX -= playerSpeedDiagonal;
+                }
+            } else if (keyCode == KeyEvent.VK_RIGHT) {
+                if (playerX < numCols - 1) {
+                    playerX += playerSpeedDiagonal;
+                }
+            } else if (keyCode == KeyEvent.VK_UP) {
+                if (playerY > 0) {
+                    playerY -= playerSpeedDiagonal;
+                }
+            } else if (keyCode == KeyEvent.VK_DOWN) {
+                if (playerY < numRows - 1) {
+                    playerY += playerSpeedDiagonal;
+                }
+            }
         }
 
         repaint(); // Repaint the panel to show the updated player position
@@ -127,6 +161,33 @@ public class Game extends JPanel implements ActionListener, KeyListener, MouseMo
     @Override
     public void mouseDragged(MouseEvent e) {
         // Handle mouseDragged events (if needed)
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        // Adjust the number of rows and columns based on the panel size
+        int newWidth = getWidth();
+        int newHeight = getHeight();
+
+        numCols = newWidth / gridSize;
+        numRows = newHeight / gridSize;
+
+        repaint(); // Repaint the panel to update the grid
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+        // Handle componentMoved events (if needed)
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+        // Handle componentShown events (if needed)
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+        // Handle componentHidden events (if needed)
     }
 
     public static void main(String[] args) {
