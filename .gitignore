@@ -1,0 +1,29 @@
+# Maven target directory
+/target/
+
+# Maven build directory
+/bin/
+
+# Eclipse project files
+/.classpath
+/.project
+/.settings/
+
+# IntelliJ IDEA project files
+.idea/
+
+# NetBeans project files
+/nbproject/
+
+# Visual Studio Code settings
+.vscode/
+
+# Gradle files (if you're not using Gradle)
+.gradle/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
