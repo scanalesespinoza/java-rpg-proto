@@ -43,7 +43,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>org.scanales.rpg.Game</mainClass>
+							<mainClass>org.scanales.rpg.GameMain</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

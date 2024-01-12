@@ -1,43 +1,43 @@
 package org.scanales.rpg;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class Player {
-    private int health;
-    private int attack;
-    private int defense;
+    private int x;
+    private int y;
+    private ImageIcon playerIcon;
 
-    // Constructors, getters, and setters
+    public Player(int initialX, int initialY) {
+        x = initialX;
+        y = initialY;
+        // Load the player icon from the "images" folder using getResource
+        String imagePath = getClass().getClassLoader().getResource("images/player.gif").getPath();
+        playerIcon = new ImageIcon(imagePath);
 
-    public void attack(Character target) {
-        // Implementation of attack logic
+        // Resize the player icon to 50x50 pixels
+        playerIcon = new ImageIcon(playerIcon.getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT));
     }
 
-    public void takeDamage(int damage) {
-        // Implementation of damage calculation
+    public void move(int dx, int dy) {
+        x += dx;
+        y += dy;
     }
 
-	public int getHealth() {
-		return health;
-	}
+    public void draw(Graphics g, int gridSize) {
+        if (playerIcon != null) {
+            playerIcon.paintIcon(null, g, x * gridSize - (50 - gridSize) / 2, y * gridSize - (50 - gridSize) / 2);
+        } else {
+            g.setColor(Color.BLUE);
+            g.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
+        }
+    }
 
-	public void setHealth(int health) {
-		this.health = health;
-	}
+    public int getX() {
+        return x;
+    }
 
-	public int getAttack() {
-		return attack;
-	}
-
-	public void setAttack(int attack) {
-		this.attack = attack;
-	}
-
-	public int getDefense() {
-		return defense;
-	}
-
-	public void setDefense(int defense) {
-		this.defense = defense;
-	}
-
-    // Other methods
+    public int getY() {
+        return y;
+    }
 }
