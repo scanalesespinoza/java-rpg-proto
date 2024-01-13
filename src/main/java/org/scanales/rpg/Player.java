@@ -12,9 +12,8 @@ public class Player {
         x = initialX;
         y = initialY;
         // Load the player icon from the "images" folder using getResource
-        String imagePath = getClass().getClassLoader().getResource("images/player.gif").getPath();
-        playerIcon = new ImageIcon(imagePath);
-
+        playerIcon = new ImageIcon(getClass().getResource("/images/player.gif"));
+        
         // Resize the player icon to 50x50 pixels
         playerIcon = new ImageIcon(playerIcon.getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT));
     }

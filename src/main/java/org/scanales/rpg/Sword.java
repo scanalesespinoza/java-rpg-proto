@@ -1,7 +1,6 @@
 package org.scanales.rpg;
 
 import java.awt.*;
-import java.awt.geom.Line2D;
 
 public class Sword {
     private Player player;
@@ -10,8 +9,6 @@ public class Sword {
 
     public Sword(Player player) {
         this.player = player;
-        this.mouseX = player.getX();
-        this.mouseY = player.getY();
     }
 
     public void updateMousePosition(int mouseX, int mouseY) {
@@ -20,19 +17,43 @@ public class Sword {
     }
 
     public void draw(Graphics g, int gridSize) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.RED);
+        int playerX = player.getX() * gridSize + gridSize / 2;
+        int playerY = player.getY() * gridSize + gridSize / 2;
 
-        int playerCenterX = player.getX() * gridSize + gridSize / 2;
-        int playerCenterY = player.getY() * gridSize + gridSize / 2;
+        g.setColor(Color.RED);
 
-        int deltaX = mouseX - playerCenterX;
-        int deltaY = mouseY - playerCenterY;
+        int deltaX = mouseX - playerX;
+        int deltaY = mouseY - playerY;
+        double length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-        int swordEndX = playerCenterX + deltaX;
-        int swordEndY = playerCenterY + deltaY;
+        int swordStartX = (int) (playerX + (deltaX / length) * (gridSize / 2));
+        int swordStartY = (int) (playerY + (deltaY / length) * (gridSize / 2));
 
-        Line2D swordLine = new Line2D.Double(playerCenterX, playerCenterY, swordEndX, swordEndY);
-        g2d.draw(swordLine);
+        int swordEndX = (int) (swordStartX + (deltaX / length) * (gridSize * 2));
+        int swordEndY = (int) (swordStartY + (deltaY / length) * (gridSize * 2));
+
+        g.drawLine(swordStartX, swordStartY, swordEndX, swordEndY);
+    }
+
+    public Rectangle getBounds(int gridSize) {
+        int playerX = player.getX() * gridSize + gridSize / 2;
+        int playerY = player.getY() * gridSize + gridSize / 2;
+
+        int deltaX = mouseX - playerX;
+        int deltaY = mouseY - playerY;
+        double length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        int swordStartX = (int) (playerX + (deltaX / length) * (gridSize / 2));
+        int swordStartY = (int) (playerY + (deltaY / length) * (gridSize / 2));
+
+        int swordEndX = (int) (swordStartX + (deltaX / length) * (gridSize * 10)); // Three times longer
+        int swordEndY = (int) (swordStartY + (deltaY / length) * (gridSize * 10)); // Three times longer
+
+        int x = Math.min(swordStartX, swordEndX);
+        int y = Math.min(swordStartY, swordEndY);
+        int width = Math.abs(swordEndX - swordStartX);
+        int height = Math.abs(swordEndY - swordStartY);
+
+        return new Rectangle(x, y, width, height);
     }
 }
